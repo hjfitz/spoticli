@@ -4,6 +4,7 @@ import request from 'request-promise'
 import emitter from './events'
 import app from './app'
 import doFlow from './flow'
+import setListeners from './control';
 
 const port: number = parseInt(process.env.PORT || '5000', 10)
 const server = app.listen(port, doFlow)
@@ -26,6 +27,7 @@ interface NowPlaying {
 	place: number
 }
 
+// todo: check 
 async function paintPlaying(token: SpotifyToken): Promise<void> {
 	const playing = await getPlaying(token.access_token)
 	let elapsed = 0
@@ -78,7 +80,19 @@ async function getPlaying(at: string): Promise<NowPlaying> {
 			Authorization: `Bearer ${at}`
 		}
 	})
-
+	try {
+		JSON.parse(resp)
+	 } catch (err) {
+		console.warn('unable to get playing track...')
+		await request({
+			method: 'PUT',
+			uri: 'https://api.spotify.com/v1/me/player/play',
+			headers: {
+				Authorization: `Bearer ${at}`
+			}
+		})
+		return getPlaying(at)
+	}
 	const {progress_ms, item} = JSON.parse(resp)
 	const {name: album} = item.album
 	const {name: artist} = item.artists[0]
@@ -94,6 +108,7 @@ async function getPlaying(at: string): Promise<NowPlaying> {
 
 emitter.on('token-get', async (token: SpotifyToken): Promise<void> => {
 	paintPlaying(token)
+	setListeners(token.access_token)
 	/**
 	 * === [playing] ===
 	 * [track]:  Soul to Squeeze
