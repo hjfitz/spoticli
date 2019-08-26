@@ -43,9 +43,21 @@ var request_promise_1 = __importDefault(require("request-promise"));
 var events_1 = __importDefault(require("./events"));
 var app_1 = __importDefault(require("./app"));
 var flow_1 = __importDefault(require("./flow"));
+var control_1 = __importDefault(require("./control"));
 var port = parseInt(process.env.PORT || '5000', 10);
 var server = app_1.default.listen(port, flow_1.default);
 var clear = function () { return console.log('\033[2J'); };
+function paintProgress(playing) {
+    // figure out % played
+    var percPlayed = ~~((playing.place / playing.length) * 10);
+    var playedBar = Array.from({ length: percPlayed }).map(function (_) { return '=='; }).join('');
+    var unplayedBar = Array.from({ length: (10 - percPlayed) }).map(function (_) { return '--'; }).join('');
+    var played = parseMS(playing.place);
+    var length = parseMS(playing.length);
+    console.log(played + "/" + length + " " + playedBar + "*" + unplayedBar);
+    playing.place += 1000;
+}
+// todo: console.log('Terminal size: ' + process.stdout.columns + 'x' + process.stdout.rows);
 function paintPlaying(token) {
     return __awaiter(this, void 0, void 0, function () {
         var playing, elapsed, interval;
@@ -57,21 +69,28 @@ function paintPlaying(token) {
                     playing = _a.sent();
                     elapsed = 0;
                     interval = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-                        var percPlayed, playedBar, unplayedBar, played, length, newPlaying;
+                        var cur, newPlaying;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
                                     clear();
-                                    console.log(chalk_1.default.bold('[artist]') + "\t" + playing.artist
-                                        + ("\n" + chalk_1.default.bold('[album]') + " \t" + playing.album)
-                                        + ("\n" + chalk_1.default.bold('[track]') + " \t" + playing.track));
-                                    percPlayed = ~~((playing.place / playing.length) * 10);
-                                    playedBar = Array.from({ length: percPlayed }).map(function (_) { return '=='; }).join('');
-                                    unplayedBar = Array.from({ length: (10 - percPlayed) }).map(function (_) { return '--'; }).join('');
-                                    played = parseMS(playing.place);
-                                    length = parseMS(playing.length);
-                                    console.log(played + "/" + length + " " + playedBar + "*" + unplayedBar);
-                                    playing.place += 1000;
+                                    if ('playlist' in playing) {
+                                        cur = playing.playlist.slice();
+                                        cur.splice(process.stdout.rows - 2);
+                                        cur.forEach(function (track) {
+                                            var out = chalk_1.default.blue(track.artist) + " - " + chalk_1.default.green(track.name) + " " + chalk_1.default.blue(track.album) + " - " + chalk_1.default.magenta(track.length);
+                                            if (track.playing)
+                                                console.log('[np]', out);
+                                            else
+                                                console.log(out);
+                                        });
+                                    }
+                                    paintProgress(playing);
+                                    // paint playing info
+                                    console.log(chalk_1.default.red('Playing') + ":\t" + chalk_1.default.blue(playing.artist) + " * " + chalk_1.default.green(playing.track) + " " + chalk_1.default.blue("(" + playing.album + ")"));
+                                    // console.log(`${chalk.bold('[artist]')}\t${playing.artist}`)
+                                    // console.log(`${chalk.bold('[album]')} \t${playing.album}`)
+                                    // console.log(`${chalk.bold('[track]')} \t${playing.track}`)
                                     elapsed += 1;
                                     if (!(++elapsed % 20 === 0)) return [3 /*break*/, 2];
                                     return [4 /*yield*/, getPlaying(token.access_token)];
@@ -102,9 +121,23 @@ function parseMS(ms) {
     var seconds = ((ms % 60000) / 1000).toFixed(0);
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
 }
+// todo: type this better
+var parseTrack = function (track, playing) {
+    var name = track.name, artists = track.artists, album = track.album, duration_ms = track.duration_ms;
+    var albumTitle = album.name;
+    var trackArtists = artists.map(function (artist) { return artist.name; }).join(', ');
+    var isplaying = (playing.title === name && playing.album === albumTitle);
+    return {
+        name: name,
+        artist: trackArtists,
+        album: albumTitle,
+        length: parseMS(duration_ms),
+        playing: isplaying
+    };
+};
 function getPlaying(at) {
     return __awaiter(this, void 0, void 0, function () {
-        var resp, _a, progress_ms, item, album, artist, track, duration_ms;
+        var resp, _a, progress_ms, item, context, album, artist, track, duration_ms, uri, id, playlist, items, formattedPlayist;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0: return [4 /*yield*/, request_promise_1.default({
@@ -116,17 +149,37 @@ function getPlaying(at) {
                     })];
                 case 1:
                     resp = _b.sent();
-                    _a = JSON.parse(resp), progress_ms = _a.progress_ms, item = _a.item;
+                    _a = JSON.parse(resp), progress_ms = _a.progress_ms, item = _a.item, context = _a.context;
                     album = item.album.name;
                     artist = item.artists[0].name;
                     track = item.name, duration_ms = item.duration_ms;
+                    uri = context.uri;
+                    if (!uri.includes('playlist')) return [3 /*break*/, 3];
+                    id = uri.split(':').pop();
+                    return [4 /*yield*/, request_promise_1.default.get("https://api.spotify.com/v1/playlists/" + id + "/tracks", {
+                            headers: {
+                                Authorization: "Bearer " + at
+                            }
+                        })];
+                case 2:
+                    playlist = _b.sent();
+                    items = JSON.parse(playlist).items;
+                    formattedPlayist = items.map(function (item) { return parseTrack(item.track, { title: track, album: album }); });
                     return [2 /*return*/, {
                             track: track,
                             artist: artist,
                             album: album,
                             length: duration_ms,
                             place: progress_ms,
+                            playlist: formattedPlayist
                         }];
+                case 3: return [2 /*return*/, {
+                        track: track,
+                        artist: artist,
+                        album: album,
+                        length: duration_ms,
+                        place: progress_ms,
+                    }];
             }
         });
     });
@@ -134,6 +187,7 @@ function getPlaying(at) {
 events_1.default.on('token-get', function (token) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         paintPlaying(token);
+        control_1.default(token.access_token);
         return [2 /*return*/];
     });
 }); });

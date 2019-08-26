@@ -52,21 +52,21 @@ async function paintPlaying(token: SpotifyToken): Promise<void> {
 	const playing = await getPlaying(token.access_token)
 	let elapsed = 0
 	let interval: NodeJS.Timeout = setInterval(async () => {
-		// clear()
+		clear()
 		if ('playlist' in playing) {
-			playing.playlist.forEach((track) => {
-				if (track.playing) {
-					console.log('[np]', track.artist, track.name, track.album, track.length)
-				} else {
-					console.log(track.artist, track.name, track.album, track.length)
-				}
+			const cur = [...playing.playlist]
+			cur.splice(process.stdout.rows - 2)
+			cur.forEach((track) => {
+				const out: string = `${chalk.blue(track.artist)} - ${chalk.green(track.name)} ${chalk.blue(track.album)} - ${chalk.magenta(track.length)}`
+				if (track.playing) console.log('[np]', out)
+				else console.log(out)
 			})
 		}
 
 		
 		paintProgress(playing)
 		// paint playing info
-		console.log(`Playing\t${playing.artist} * ${playing.track} (${playing.album})`)
+		console.log(`${chalk.red('Playing')}:\t${chalk.blue(playing.artist)} * ${chalk.green(playing.track)} ${chalk.blue(`(${playing.album})`)}`)
 		// console.log(`${chalk.bold('[artist]')}\t${playing.artist}`)
 		// console.log(`${chalk.bold('[album]')} \t${playing.album}`)
 		// console.log(`${chalk.bold('[track]')} \t${playing.track}`)
