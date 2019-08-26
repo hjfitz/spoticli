@@ -19,34 +19,60 @@ interface SpotifyToken {
 	scope: string
 }
 
+interface Track {
+	name: string
+	artist: string
+	album: string
+	length: string
+	playing: boolean
+}
+
 interface NowPlaying {
 	track: string
 	artist: string
 	album: string
 	length: number
 	place: number
+	playlist?: Track[]
 }
 
-// todo: check 
+function paintProgress(playing: NowPlaying) {
+	// figure out % played
+	const percPlayed: number= ~~((playing.place / playing.length) * 10)
+	const playedBar: string = Array.from({length: percPlayed}).map(_ => '==').join('')
+	const unplayedBar: string = Array.from({length: (10 - percPlayed)}).map(_ => '--').join('')
+	const played: string = parseMS(playing.place)
+	const length: string = parseMS(playing.length)
+	console.log(`${played}/${length} ${playedBar}*${unplayedBar}`)
+	playing.place += 1000
+}
+
+// todo: console.log('Terminal size: ' + process.stdout.columns + 'x' + process.stdout.rows);
 async function paintPlaying(token: SpotifyToken): Promise<void> {
 	const playing = await getPlaying(token.access_token)
 	let elapsed = 0
 	let interval: NodeJS.Timeout = setInterval(async () => {
-		clear()
-		console.log(
-			`${chalk.bold('[artist]')}\t${playing.artist}`
-			+ `\n${chalk.bold('[album]')} \t${playing.album}`
-			+ `\n${chalk.bold('[track]')} \t${playing.track}`
-		)
-		// figure out % played
-		const percPlayed: number= ~~((playing.place / playing.length) * 10)
-		const playedBar: string = Array.from({length: percPlayed}).map(_ => '==').join('')
-		const unplayedBar: string = Array.from({length: (10 - percPlayed)}).map(_ => '--').join('')
-		const played: string = parseMS(playing.place)
-		const length: string = parseMS(playing.length)
-		console.log(`${played}/${length} ${playedBar}*${unplayedBar}`)
-		playing.place += 1000
+		// clear()
+		if ('playlist' in playing) {
+			playing.playlist.forEach((track) => {
+				if (track.playing) {
+					console.log('[np]', track.artist, track.name, track.album, track.length)
+				} else {
+					console.log(track.artist, track.name, track.album, track.length)
+				}
+			})
+		}
+
+		
+		paintProgress(playing)
+		// paint playing info
+		console.log(`Playing\t${playing.artist} * ${playing.track} (${playing.album})`)
+		// console.log(`${chalk.bold('[artist]')}\t${playing.artist}`)
+		// console.log(`${chalk.bold('[album]')} \t${playing.album}`)
+		// console.log(`${chalk.bold('[track]')} \t${playing.track}`)
+
 		elapsed += 1
+		// paint playlist
 
 		// in case the song changes - check every 20s
 		if (++elapsed % 20 === 0) {
@@ -72,6 +98,21 @@ function parseMS(ms: number): string {
 	return minutes + ":" + ((<number>seconds) < 10 ? '0' : '') + seconds;
 }
 
+// todo: type this better
+const parseTrack = (track: any, playing: {title: any, album: any}): Track => {
+	const {name, artists, album, duration_ms} = track
+	const albumTitle = album.name
+	const trackArtists = artists.map(artist => artist.name).join(', ')
+	const isplaying = (playing.title === name && playing.album === albumTitle)
+	return {
+		name,
+		artist: trackArtists,
+		album: albumTitle,
+		length: parseMS(duration_ms),
+		playing: isplaying
+	}
+}
+
 async function getPlaying(at: string): Promise<NowPlaying> {
 	const resp = await request({
 		method: 'GET',
@@ -80,23 +121,30 @@ async function getPlaying(at: string): Promise<NowPlaying> {
 			Authorization: `Bearer ${at}`
 		}
 	})
-	try {
-		JSON.parse(resp)
-	 } catch (err) {
-		console.warn('unable to get playing track...')
-		await request({
-			method: 'PUT',
-			uri: 'https://api.spotify.com/v1/me/player/play',
+	const {progress_ms, item, context} = JSON.parse(resp)
+	const {name: album} = item.album
+	const {name: artist} = item.artists[0]
+	const {name: track, duration_ms} = item
+	const {uri} = context
+	if (uri.includes('playlist')) {
+		// attempt to get playlist information and shorten it
+		const id = uri.split(':').pop()
+		const playlist = await request.get(`https://api.spotify.com/v1/playlists/${id}/tracks`, {
 			headers: {
 				Authorization: `Bearer ${at}`
 			}
 		})
-		return getPlaying(at)
+		const {items} = JSON.parse(playlist)
+		const formattedPlayist: Track[] = items.map(item => parseTrack(item.track, {title: track, album}))
+		return {
+			track,
+			artist,
+			album,
+			length: duration_ms,
+			place: progress_ms,
+			playlist: formattedPlayist
+		}
 	}
-	const {progress_ms, item} = JSON.parse(resp)
-	const {name: album} = item.album
-	const {name: artist} = item.artists[0]
-	const {name: track, duration_ms} = item
 	return {
 		track,
 		artist,
@@ -109,11 +157,4 @@ async function getPlaying(at: string): Promise<NowPlaying> {
 emitter.on('token-get', async (token: SpotifyToken): Promise<void> => {
 	paintPlaying(token)
 	setListeners(token.access_token)
-	/**
-	 * === [playing] ===
-	 * [track]:  Soul to Squeeze
-	 * [artist]: Red Hot Chili Peppers
-	 * [album]:  Stadium Arcadium 
-	 * 2:33/4:50 ==============-------
-	 */
 })
