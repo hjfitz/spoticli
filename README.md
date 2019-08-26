@@ -15,4 +15,5 @@
 ## Screenshots
 
 **Player**
+
 ![Player in action](screenshots/player.png)
