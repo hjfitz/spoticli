@@ -8,7 +8,7 @@ stages:
 # Start with checking the code and running all tests
 - stage: Code_Quality
   jobs: 
-  - job: TSLint
+  - job: InstallDeps
     displayName: 📦 Installing Dependencies
     continueOnError: true # todo: change this one pipeline has been established
     steps: 
