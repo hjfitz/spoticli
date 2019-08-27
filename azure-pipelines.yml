@@ -1,3 +1,4 @@
+# [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
 trigger:
 - master
 
@@ -22,3 +23,12 @@ stages:
       - bash: echo [ETS] Testing code...
       - bash: yarn
       - bash: yarn test
+  - job: Audit
+    displayName: 🔐 Auditing Dependencies
+    continueOnError: true
+    steps:
+      - bash: yarn audit
+  - job: StaticAnalysis
+    displayName: Analysing Source Code
+    steps:
+      - bash: echo $(which docker)
