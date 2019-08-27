@@ -18,6 +18,7 @@ stages:
   - job: TSLint
     displayName: 🧹 Running TSLint
     continueOnError: true # todo: change this one pipeline has been established
+    dependsOn: InstallDeps
     steps: 
       - bash: |
           echo [ETS] Attempting to run linter...
