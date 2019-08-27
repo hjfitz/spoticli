@@ -4,9 +4,7 @@ import path from 'path'
 
 const envLoc: string = path.join(process.cwd(), '.env')
 
-
 const contents: string = fs.readFileSync(envLoc).toString()
-
 
 console.log(chalk.green('Loading env...'))
 console.log(chalk.green('File:'), envLoc)
@@ -23,15 +21,13 @@ const scopes: string[] = [
 ]
 
 const callback: string = 'https://accounts.spotify.com/authorize'
-	
-		+'?response_type=code'
+
+		+ '?response_type=code'
 		+ `&client_id=${encodeURIComponent(process.env.SPOTIFY_CLIENT_ID || '')}`
 		+ `&scope=${encodeURIComponent(scopes.join(' '))}`
 		+ `&redirect_uri=${encodeURIComponent(process.env.SPOTIFY_CALLBACK_URL || '')}`
-	
 
 // create an express app
-
 
 const doFlow = (): void => {
 	console.log(chalk.green('Server started'))

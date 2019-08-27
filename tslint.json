@@ -1,0 +1,16 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint-config-airbnb"
+    ],
+    "jsRules": {},
+    "rules": {
+        "indent": [true, "tabs", 4],
+        "ter-indent": [true, "tab"],
+        "semicolon": false,
+        "object-curly-spacing": false,
+        "import-name": false,
+        "align": false
+    },
+    "rulesDirectory": []
+}

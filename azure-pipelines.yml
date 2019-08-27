@@ -17,3 +17,15 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+# Start with checking the code and running all tests
+stages:
+- stage: Code Quality
+  jobs: 
+  - job: TSLint
+    displayName: 🧹 Running TSLint...
+    continueOnError: true # todo: change this one pipeline has been established
+    steps: 
+      -bash: |
+        echo [ETS] Attempting to run linter...
+        npx tslint
