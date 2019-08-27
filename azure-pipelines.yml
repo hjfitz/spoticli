@@ -10,6 +10,6 @@ stages:
     displayName: 🧹 Running TSLint...
     continueOnError: true # todo: change this one pipeline has been established
     steps: 
-      -bash: |
+      - bash: |
         echo [ETS] Attempting to run linter...
         npx tslint
