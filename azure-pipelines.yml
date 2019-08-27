@@ -10,14 +10,14 @@ stages:
 - stage: Code_Quality
   jobs: 
   - job: TSLint
-    displayName: 🧹 Running TSLint
+    displayName: 🧹 - Running TSLint
     continueOnError: true # todo: change this one pipeline has been established
     steps: 
       - bash: echo [ETS] Attempting to run linter...
       - bash: yarn
       - bash: yarn lint
   - job: Testing
-    displayName: 📚 Testing Code
+    displayName: 📚 - Testing Code
     continueOnError: true
     steps:
       - bash: echo [ETS] Testing code...
@@ -26,7 +26,7 @@ stages:
 - stage: Security
   jobs: 
   - job: Audit
-    displayName: 🔐 Auditing Dependencies
+    displayName: 🔐 - Auditing Dependencies
     continueOnError: true
     steps:
       - bash: yarn audit
@@ -35,6 +35,6 @@ stages:
     steps:
       - bash: ./ssca.sh
   - job: Leaks
-    displayName: do a test
+    displayName: 🔑 - Checking for committed keys
     steps:
       - bash: ./check-leaks.sh
