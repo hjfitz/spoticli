@@ -23,6 +23,8 @@ stages:
       - bash: echo [ETS] Testing code...
       - bash: yarn
       - bash: yarn test
+- stage: Security
+  jobs: 
   - job: Audit
     displayName: 🔐 Auditing Dependencies
     continueOnError: true
@@ -32,7 +34,7 @@ stages:
     displayName: Analysing Source Code
     steps:
       - bash: ./ssca.sh
-  - job: Testy
+  - job: Leaks
     displayName: do a test
     steps:
-      - bash: echo $(which jq)
+      - bash: ./check-leaks.sh
