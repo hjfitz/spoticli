@@ -8,18 +8,17 @@ stages:
 # Start with checking the code and running all tests
 - stage: Code_Quality
   jobs: 
-  - job: InstallDeps
-    displayName: 📦 Installing Dependencies
-    continueOnError: true # todo: change this one pipeline has been established
-    steps: 
-      - bash: |
-          echo [ETS] Installing deps
-          npm install
   - job: TSLint
     displayName: 🧹 Running TSLint
     continueOnError: true # todo: change this one pipeline has been established
-    dependsOn: InstallDeps
     steps: 
-      - bash: |
-          echo [ETS] Attempting to run linter...
-          npx tslint lib/**/*
+      - bash: echo [ETS] Attempting to run linter...
+      - bash: yarn
+      - bash: yarn lint
+  - job: Testing
+    displayName: 📚 Testing Code
+    continueOnError: true
+    steps:
+      - bash: echo [ETS] Testing code...
+      - bash: yarn
+      - bash: yarn test
