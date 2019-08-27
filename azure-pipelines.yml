@@ -4,7 +4,7 @@ trigger:
 # Start with checking the code and running all tests
 stages:
 
-- stage: Code Quality
+- stage: Code_Quality
   jobs: 
   - job: TSLint
     displayName: 🧹 Running TSLint...
