@@ -1,4 +1,4 @@
-const {expext} = require('chai')
+const {expect} = require('chai')
 
 describe('basic test', () => {
 	it('should work', () => {
