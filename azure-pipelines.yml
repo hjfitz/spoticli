@@ -31,4 +31,4 @@ stages:
   - job: StaticAnalysis
     displayName: Analysing Source Code
     steps:
-      - bash: echo $(which docker)
+      - bash: ./ssca.sh
