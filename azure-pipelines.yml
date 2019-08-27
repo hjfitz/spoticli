@@ -7,7 +7,7 @@ trigger:
 stages:
 
 # Start with checking the code and running all tests
-- stage: Code_Quality
+- stage: CodeQuality
   jobs: 
   - job: TSLint
     displayName: 🧹 - Running TSLint
@@ -31,7 +31,7 @@ stages:
     steps:
       - bash: yarn audit
   - job: StaticAnalysis
-    displayName: Analysing Source Code
+    displayName: 🔎 - Analysing Source Code
     steps:
       - bash: ./ssca.sh
   - job: Leaks
