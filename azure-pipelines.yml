@@ -20,4 +20,5 @@ stages:
     steps: 
       - bash: |
           echo [ETS] Attempting to run linter...
+          npm install
           npx tslint
