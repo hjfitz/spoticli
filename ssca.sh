@@ -6,4 +6,8 @@ docker build -t nodejsscan-cli -f cli.dockerfile  .
 cd ..
 docker run -v $(echo $(pwd)):/src nodejsscan-cli -d /src/bin -o /src/results.json
 
-echo $(cat results.json)
+res=$(cat results.json| jq '.total_count.sec')
+
+# exit with the amount of errors. 0 errors means an ok exit code!
+cat results | jq
+exit $res
