@@ -1,24 +1,24 @@
 trigger:
 - master
 
-# Start with checking the code and running all tests
+# Each stage has it's own container - 
+# if you change something in one stage, it doesn't do anything for the other stage
 stages:
 
-- stage: Initialisation
-  jobs:
-    - job: Installation
-      displayName: 📦 Installing dependencies
-      continueOnError: false
-      steps:
-        - bash: npm install
-
+# Start with checking the code and running all tests
 - stage: Code_Quality
   jobs: 
+  - job: TSLint
+    displayName: 📦 Installing Dependencies
+    continueOnError: true # todo: change this one pipeline has been established
+    steps: 
+      - bash: |
+          echo [ETS] Installing deps
+          npm install
   - job: TSLint
     displayName: 🧹 Running TSLint
     continueOnError: true # todo: change this one pipeline has been established
     steps: 
       - bash: |
           echo [ETS] Attempting to run linter...
-          npm install
-          npx tslint
+          npx tslint lib/**/*
