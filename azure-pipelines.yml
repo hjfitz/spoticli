@@ -4,10 +4,18 @@ trigger:
 # Start with checking the code and running all tests
 stages:
 
+- stage: Initialisation
+  jobs:
+    - job: Installation
+      displayName: 📦 Installing dependencies
+      continueOnError: false
+      steps:
+        - bash: npm install
+
 - stage: Code_Quality
   jobs: 
   - job: TSLint
-    displayName: 🧹 Running TSLint...
+    displayName: 🧹 Running TSLint
     continueOnError: true # todo: change this one pipeline has been established
     steps: 
       - bash: |
