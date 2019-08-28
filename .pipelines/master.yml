@@ -24,6 +24,8 @@ stages:
       - bash: yarn
       - bash: yarn test
 - stage: Security
+  dependsOn: CodeQuality
+  condition: succeeded('CodeQuality')
   jobs: 
   - job: Audit
     displayName: 🔐 - Auditing Dependencies
@@ -33,8 +35,8 @@ stages:
   - job: StaticAnalysis
     displayName: 🔎 - Analysing Source Code
     steps:
-      - bash: ./pipelines/ssca.sh
+      - bash: ./.pipelines/ssca.sh
   - job: Leaks
     displayName: 🔑 - Checking for committed keys
     steps:
-      - bash: ./pipelines/check-leaks.sh
+      - bash: ./.pipelines/check-leaks.sh

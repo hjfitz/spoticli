@@ -12,7 +12,13 @@ trigger:
   branches:
     exclude:
     - master
+    - develop
+    - staging # this doesn't work
 
+trigger:
+  branches:
+    exclude:
+    - master
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
 stages:
