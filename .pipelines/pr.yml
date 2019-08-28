@@ -2,11 +2,11 @@
 pr:
   branches:
     include:
-    - feature/*
-    - fix/*
-    - cleanup/*
+      - feature/*
+      - fix/*
+      - cleanup/*
     exclude:
-    - experimental/*
+      - experimental/*
 
 trigger: none
 # Each stage has it's own container - 
