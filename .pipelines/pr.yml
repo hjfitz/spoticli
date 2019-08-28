@@ -1,13 +1,14 @@
 # [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
-trigger: none
 pr:
-  branches:
-    include:
-    - feature/*
-    - fix/*
-    - cleanup/*
-    exclude:
-    - experimental/*
+  branches:
+    include:
+      - feature/*
+      - fix/*
+      - cleanup/*
+    exclude:
+      - experimental/*
+      - master
+
 
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
