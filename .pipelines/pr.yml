@@ -7,6 +7,9 @@ pr:
       - cleanup/*
     exclude:
       - experimental/*
+      - master
+      - develop
+      - staging
 
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
