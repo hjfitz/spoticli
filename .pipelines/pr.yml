@@ -7,9 +7,6 @@ pr:
     - cleanup/*
     exclude:
     - experimental/*
-    - master
-    - develop
-    - staging # this doesn't work
 
 trigger: none
 # Each stage has it's own container - 
