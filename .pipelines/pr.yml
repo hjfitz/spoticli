@@ -5,12 +5,12 @@ trigger:
 pr:
   branches:
     include:
-    - feature/*
-    - fix/*
-    - cleanup/*
+      - feature/*
+      - fix/*
+      - cleanup/*
     exclude:
-    - experimental/*
-    - master
+      - experimental/*
+      - master
 
 
 # Each stage has it's own container - 
