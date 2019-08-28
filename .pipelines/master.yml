@@ -24,6 +24,7 @@ stages:
       - bash: yarn
       - bash: yarn test
 - stage: Security
+  dependsOn: CodeQuality
   jobs: 
   - job: Audit
     displayName: 🔐 - Auditing Dependencies
