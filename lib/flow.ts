@@ -8,7 +8,7 @@ const contents: string = fs.readFileSync(envLoc).toString()
 
 console.log(chalk.green('Loading env...'))
 console.log(chalk.green('File:'), envLoc)
-contents.split('\n').map((line: string): void => {
+contents.split('\n').filter(Boolean).map((line: string): void => {
 	const [key, ...vals]: string[] = line.split('=')
 	const val: string = vals.join('=')
 	process.env[key] = val
