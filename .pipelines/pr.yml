@@ -8,17 +8,7 @@ pr:
     exclude:
     - experimental/*
 
-<<<<<<< HEAD
-trigger:
-  branches:
-    exclude:
-    - master
-    - develop
-    - staging # this doesn't work
-
-=======
 trigger: none
->>>>>>> master
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
 stages:
