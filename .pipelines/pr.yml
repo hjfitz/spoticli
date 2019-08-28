@@ -3,14 +3,14 @@ trigger:
   - none
 
 pr:
-  branches:
-    include:
-      - feature/*
-      - fix/*
-      - cleanup/*
-    exclude:
-      - experimental/*
-      - master
+  branches:
+    include:
+    - feature/*
+    - fix/*
+    - cleanup/*
+    exclude:
+    - experimental/*
+    - master
 
 
 # Each stage has it's own container - 
