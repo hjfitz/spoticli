@@ -1,4 +1,5 @@
 # [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
+trigger: none
 pr:
   branches:
     include:
@@ -7,13 +8,8 @@ pr:
       - cleanup/*
     exclude:
       - experimental/*
-
-trigger: none
-# Each stage has it's own container - 
-# if you change something in one stage, it doesn't do anything for the other stage
+      - master
 stages:
-
-# Start with checking the code and running all tests
 - stage: CodeQuality
   jobs: 
   - job: TSLint
