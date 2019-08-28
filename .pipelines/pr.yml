@@ -3,20 +3,13 @@ trigger:
   - none
 
 pr:
-  branches:
-    include:
-      - feature/*
-      - fix/*
-      - cleanup/*
-    exclude:
-      - experimental/*
-      - master
-
+- feature/*
+- fix/*
+- cleanup/*
 
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
 stages:
-
 # Start with checking the code and running all tests
 - stage: PR_CodeQuality
   jobs: 
