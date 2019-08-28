@@ -1,6 +1,6 @@
 # [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
-trigger:
-- master
+pr: none
+trigger: master
 
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
