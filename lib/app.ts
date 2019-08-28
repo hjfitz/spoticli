@@ -5,8 +5,6 @@ import emitter from './events'
 
 const app = express()
 
-
-
 app.get('/', async (req, res) => {
 	const {
 		SPOTIFY_CALLBACK_URL: callback,
