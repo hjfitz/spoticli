@@ -1,5 +1,4 @@
 # [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
-trigger: none
 pr:
   branches:
     include:
