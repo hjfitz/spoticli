@@ -2,11 +2,16 @@
 pr:
   branches:
     include:
-      - feature/*
-      - fix/*
-      - cleanup/*
+    - feature/*
+    - fix/*
+    - cleanup/*
     exclude:
-      - experimental/*
+    - experimental/*
+
+trigger:
+  branches:
+    exclude:
+    - master
 
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
@@ -30,10 +35,10 @@ stages:
       - bash: yarn
       - bash: yarn test
 - stage: Security
+  condition: succeeded('CodeQuality')
   jobs: 
   - job: Audit
     displayName: 🔐 - Auditing Dependencies
-    continueOnError: true
     steps:
       - bash: yarn audit
   - job: StaticAnalysis
