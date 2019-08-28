@@ -4,12 +4,12 @@ trigger: none
 pr:
   branches:
     include:
-      - feature/*
-      - fix/*
-      - cleanup/*
+    - feature/*
+    - fix/*
+    - cleanup/*
     exclude:
-      - experimental/*
-      - master
+    - experimental/*
+    - master
 stages:
 - stage: PR_CodeQuality
   jobs: 
