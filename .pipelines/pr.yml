@@ -3,9 +3,9 @@ trigger:
   - none
 
 pr:
-  - feature/*
-  - fix/*
-  - cleanup/*
+- feature/*
+- fix/*
+- cleanup/*
 
 stages:
 - stage: PR_CodeQuality
