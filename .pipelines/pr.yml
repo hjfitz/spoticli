@@ -10,7 +10,7 @@ pr:
       - experimental/*
       - master
 stages:
-- stage: CodeQuality
+- stage: PR_CodeQuality
   jobs: 
   - job: TSLint
     displayName: 🧹 - Running TSLint
@@ -26,7 +26,7 @@ stages:
       - bash: echo [ETS] Testing code...
       - bash: yarn
       - bash: yarn test
-- stage: Security
+- stage: PR_Security
   condition: succeeded('CodeQuality')
   jobs: 
   - job: Audit

@@ -6,15 +6,8 @@ trigger: master
 stages:
 
 # Start with checking the code and running all tests
-- stage: CodeQuality
+- stage: Prod_CodeQuality
   jobs: 
-  - job: TSLint
-    displayName: 🧹 - Running TSLint
-    continueOnError: true # todo: change this one pipeline has been established
-    steps: 
-      - bash: echo [ETS] Attempting to run linter...
-      - bash: yarn
-      - bash: yarn lint
   - job: Testing
     displayName: 📚 - Testing Code
     continueOnError: true
@@ -22,20 +15,9 @@ stages:
       - bash: echo [ETS] Testing code...
       - bash: yarn
       - bash: yarn test
-- stage: Security
-  dependsOn: CodeQuality
-  condition: succeeded('CodeQuality')
+- stage: Prod_Security
   jobs: 
   - job: Audit
     displayName: 🔐 - Auditing Dependencies
-    continueOnError: true
     steps:
       - bash: yarn audit
-  - job: StaticAnalysis
-    displayName: 🔎 - Analysing Source Code
-    steps:
-      - bash: ./.pipelines/ssca.sh
-  - job: Leaks
-    displayName: 🔑 - Checking for committed keys
-    steps:
-      - bash: ./.pipelines/check-leaks.sh
