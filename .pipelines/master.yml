@@ -4,11 +4,7 @@ pr:
 trigger:
 - master
 
-# Each stage has it's own container - 
-# if you change something in one stage, it doesn't do anything for the other stage
 stages:
-
-# Start with checking the code and running all tests
 - stage: Prod_CodeQuality
   jobs: 
   - job: Testing
