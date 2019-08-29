@@ -6,7 +6,7 @@ pr:
 # if you change something in one stage, it doesn't do anything for the other stage
 stages:
 # Start with checking the code and running all tests
-- stage: init
+- stage: weird
   jobs:
   - job: Send init
     steps:
