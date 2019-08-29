@@ -35,7 +35,7 @@ stages:
         inputs:
           key: yarn | $(Agent.OS) | yarn.lock
           path: $(YARN_CACHE_FOLDER)
-      - script: yarn test
+      - bash: yarn test
 - stage: PR_Test
   jobs: 
   - job: Testing
