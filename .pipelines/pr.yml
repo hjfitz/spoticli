@@ -26,7 +26,6 @@ stages:
     displayName: TEST PLS
     steps:
       - bash: echo $(Build.BuildId) 
-      - bash: echo $(Build.DefinitionName) 
       - bash: echo $(Build.Repository.ID) 
       - bash: echo $(Build.Repository.Name)
 - stage: PR_Security
