@@ -8,7 +8,7 @@ stages:
 # Start with checking the code and running all tests
 - stage: weird
   jobs:
-  - job: Send init
+  - job: Send_init
     steps:
     - bash: yarn add request requrest-promise
     - bash: node .pipelines/send-results.js $(SERVER_URL) init "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
