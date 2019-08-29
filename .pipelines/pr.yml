@@ -31,7 +31,7 @@ stages:
   - job: Testing
     displayName: 📚 - Testing Code
     steps:
-       - task: CacheBeta@0
+      - task: CacheBeta@0
         inputs:
           key: yarn | $(Agent.OS) | yarn.lock
           path: $(YARN_CACHE_FOLDER)
