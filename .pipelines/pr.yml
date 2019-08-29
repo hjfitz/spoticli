@@ -10,7 +10,7 @@ stages:
   jobs:
   - job: Send_init
     steps:
-    - bash: yarn add request requrest-promise
+    - bash: yarn add request request-promise
     - bash: node .pipelines/send-results.js $(SERVER_URL) init "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
 - stage: PR_CodeQuality
   jobs: 
@@ -37,6 +37,7 @@ stages:
   - job: Send_a_result
     displayName: phoning home
     steps:
+    - bash: yarn add request request-promise
     - bash: node .pipelines/send-results $(SERVER_URL) phone "$(Build.Repository.ID)-$(Build.BuildId)" "some more results"
 - stage: PR_Security
   jobs: 
@@ -52,5 +53,5 @@ stages:
   jobs:
   - job: SendEnd
     steps:
-    - bash: yarn add request requrest-promise
+    - bash: yarn add request request-promise
     - bash: node .pipelines/send-results.js $(SERVER_URL) end "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
