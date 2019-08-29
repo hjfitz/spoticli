@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "npx mocha test/index.js",
-    "lint": "npx tslint lib/**/*"
+    "test": "mocha test/index.js",
+    "lint": "tslint lib/**/*"
   },
   "devDependencies": {
     "@types/chalk": "^2.2.0",
