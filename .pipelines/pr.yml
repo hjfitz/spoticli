@@ -11,7 +11,7 @@ stages:
   - job: Send_init
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-results.js $(SERVER_URL) init "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
+    - bash: node .pipelines/send-result.js $(SERVER_URL) init "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
 - stage: PR_CodeQuality
   jobs: 
   - job: TSLint
@@ -38,7 +38,7 @@ stages:
     displayName: phoning home
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-results $(SERVER_URL) phone "$(Build.Repository.ID)-$(Build.BuildId)" "some more results"
+    - bash: node .pipelines/send-result.js $(SERVER_URL) phone "$(Build.Repository.ID)-$(Build.BuildId)" "some more results"
 - stage: PR_Security
   jobs: 
   - job: StaticAnalysis
@@ -54,4 +54,4 @@ stages:
   - job: SendEnd
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-results.js $(SERVER_URL) end "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
+    - bash: node .pipelines/send-result.js $(SERVER_URL) end "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
