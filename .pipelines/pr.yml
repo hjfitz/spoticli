@@ -9,7 +9,7 @@ stages:
 - stage: PR_Init
   jobs:
   - job: Send init
-  - steps:
+    steps:
     - bash: yarn add request requrest-promise
     - bash: node .pipelines/send-results.js $(SERVER_URL) init "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
 - stage: PR_CodeQuality
@@ -51,6 +51,6 @@ stages:
 - stage: PR_End
   jobs:
   - job: Send init
-  - steps:
+    steps:
     - bash: yarn add request requrest-promise
     - bash: node .pipelines/send-results.js $(SERVER_URL) end "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
