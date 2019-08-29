@@ -25,7 +25,7 @@ stages:
   - job: Testing
     displayName: TEST PLS
     steps:
-      - bash: echo $(Build.BuildId) $(Environment.Name) $(Environment.ResourceName) $(Environment.Resourceid)
+      - bash: echo $(Build.BuildId) $(Build.DefinitionName) $(Build.Repository.ID) $(Build.Repository.Name)
 - stage: PR_Security
   jobs: 
   - job: StaticAnalysis
