@@ -25,7 +25,10 @@ stages:
   - job: Testing
     displayName: TEST PLS
     steps:
-      - bash: echo $(Build.BuildId) $(Build.DefinitionName) $(Build.Repository.ID) $(Build.Repository.Name)
+      - bash: echo $(Build.BuildId) 
+      - bash: echo $(Build.DefinitionName) 
+      - bash: echo $(Build.Repository.ID) 
+      - bash: echo $(Build.Repository.Name)
 - stage: PR_Security
   jobs: 
   - job: StaticAnalysis
