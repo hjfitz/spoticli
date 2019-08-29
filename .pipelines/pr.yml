@@ -3,7 +3,9 @@ trigger:
 - none
 
 pr:
-- feature/*
+  branches:
+    include:
+    - feature/*
 
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
