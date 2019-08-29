@@ -10,13 +10,13 @@ stages:
   - job: Testing
     displayName: 📚 - Testing Code
     steps:
-      - bash: echo [ETS] Testing code...
-      - bash: yarn
-      - bash: yarn test
+    - bash: echo [ETS] Testing code...
+    - bash: yarn
+    - bash: yarn test
 - stage: Prod_Security
   jobs: 
   - job: Audit
     displayName: 🔐 - Auditing Dependencies
     continueOnError: true
     steps:
-      - bash: yarn audit
+    - bash: yarn audit
