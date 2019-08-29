@@ -1,59 +1,55 @@
-# [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
 pr:
 - feature/*
+- cleanup/*
+- fix/*
 
 variables:
-  BUILD_UNIQUE_ID: "$(Build.Repository.ID)-$(Build.BuildId)-$(Build.SourceBranchName)"
-  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+  BUILD_UQ_ID: "$(Build.Repository.ID)-$(Build.BuildId)-$(Build.SourceBranchName)"
 
-# Each stage has it's own container - 
-# if you change something in one stage, it doesn't do anything for the other stage
 stages:
-# Start with checking the code and running all tests
-- stage: weird
+
+
+- stage: PR_INIT
   jobs:
-  - job: Send_init
+  - job: Signal_Init
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js $(SERVER_URL) init $(BUILD_UNIQUE_ID) $(Build.SourceBranchName) "$(date +%s)"
-- stage: PR_CodeQuality
-  jobs: 
-  - job: TSLint
-    displayName: 🧹 - Running TSLint
-    steps:
-      - script: yarn
-      - bash: yarn lint
-  - job: Testing
-    displayName: 📚 - Testing Code
-    steps:
-      - script: yarn
-      - bash: yarn test
-- stage: PR_Test
-  jobs: 
-  - job: Testing
-    displayName: TEST PLS
-    steps:
-      - bash: echo $(Build.BuildId) 
-      - bash: echo $(Build.Repository.ID) 
-      - bash: echo $(Build.Repository.Name)
-  - job: Send_a_result
-    displayName: phoning home
-    steps:
-    - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js $(SERVER_URL) phone $(BUILD_UNIQUE_ID) $(Build.SourceBranchName) "some more results"
-- stage: PR_Security
-  jobs: 
-  - job: StaticAnalysis
-    displayName: 🔎 - Analysing Source Code
-    steps:
-      - bash: ./.pipelines/ssca.sh
-  - job: Leaks
-    displayName: 🔑 - Checking for committed keys
-    steps:
-      - bash: ./.pipelines/check-leaks.sh
-- stage: PR_End
+    - bash: node .pipelines/send-result.js init $(date +%s) $(Build.Repository.ID) $(Build.SourceBranchName) initialising $(SERVER_URL)
+
+
+- stage: PR_CODEQUAL
   jobs:
-  - job: SendEnd
+  - job: Lint_Code
+    displayName: Lint Code
+    steps:
+    - bash: yarn
+    - bash: yarn lint
+  - job: Test_Code
+    displayName: Test Code
+    steps:
+    - bash: yarn
+    - bash: yarn test
+
+
+- stage: PR_SECURITY
+  jobs:
+  - job: Code_Analysis
+    displayName: Static Source Code Analysis (nodejsscan)
+    steps:
+    - bash: ./.pipelines/ssca.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
+  - job: Dep_Audit
+    displayName: Audit Dependencies (yarn audit)
+    steps:
+    - bash: ./.pipelines/audit.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
+  - job: Key_check
+    displayName: Check for any committed keys (gitleaks)
+    steps:
+    - bash: ./.pipelines/check-leaks.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
+
+
+- stage: PR_EOF
+  jobs:
+  - job: Signal_End
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js $(SERVER_URL) end $(BUILD_UNIQUE_ID) $(Build.SourceBranchName) "$(date +%s)"
+    - bash: node .pipelines/send-result.js end $(date +%s) $(Build.Repository.ID) $(Build.SourceBranchName) initialising $(SERVER_URL)
