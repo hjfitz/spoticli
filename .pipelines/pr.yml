@@ -6,6 +6,12 @@ pr:
 # if you change something in one stage, it doesn't do anything for the other stage
 stages:
 # Start with checking the code and running all tests
+- stage: PR_Init
+  jobs:
+  - job: Send init
+  - steps:
+    - bash: yarn add request requrest-promise
+    - bash: node .pipelines/send-results.js $(SERVER_URL) init "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
 - stage: PR_CodeQuality
   jobs: 
   - job: TSLint
@@ -28,6 +34,10 @@ stages:
       - bash: echo $(Build.BuildId) 
       - bash: echo $(Build.Repository.ID) 
       - bash: echo $(Build.Repository.Name)
+  - job: Send a result
+    displayName: phoning home
+    steps:
+    - bash: node .pipelines/send-results $(SERVER_URL) phone "$(Build.Repository.ID)-$(Build.BuildId)" "some more results"
 - stage: PR_Security
   jobs: 
   - job: StaticAnalysis
@@ -38,3 +48,9 @@ stages:
     displayName: 🔑 - Checking for committed keys
     steps:
       - bash: ./.pipelines/check-leaks.sh
+- stage: PR_End
+  jobs:
+  - job: Send init
+  - steps:
+    - bash: yarn add request requrest-promise
+    - bash: node .pipelines/send-results.js $(SERVER_URL) end "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
