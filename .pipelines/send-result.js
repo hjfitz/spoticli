@@ -1,12 +1,12 @@
 const request = require('request-promise')
 
-const [,,url, type, id, branch, payload] = process.argv
+const [,,phase, time, repo, branch, data, url] = process.argv
 
-console.log({url, type, payload})
+const body = {phase, time, repo, branch, data}
 
 async function main() {
 	const resp = await request.post(url, {
-		body: {id, payload, type, branch},
+		body,
 		json: true
 	})
 	console.log(resp)
