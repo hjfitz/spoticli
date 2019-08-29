@@ -2,6 +2,10 @@
 pr:
 - feature/*
 
+variables:
+  BUILD_UNIQUE_ID: "$(Build.Repository.ID)-$(Build.BuildId)-$(Build.SourceBranchName)"
+  YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
+
 # Each stage has it's own container - 
 # if you change something in one stage, it doesn't do anything for the other stage
 stages:
@@ -11,12 +15,16 @@ stages:
   - job: Send_init
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js $(SERVER_URL) init "$(Build.Repository.ID)-$(Build.BuildId)-$(Build.SourceBranchName)" $(Build.SourceBranchName) "$(date +%s)"
+    - bash: node .pipelines/send-result.js $(SERVER_URL) init $(BUILD_UNIQUE_ID) $(Build.SourceBranchName) "$(date +%s)"
 - stage: PR_CodeQuality
   jobs: 
   - job: TSLint
     displayName: 🧹 - Running TSLint
-    steps: 
+    steps:
+      - task: CacheBeta@0
+        inputs:
+          key: yarn | $(Agent.OS) | yarn.lock
+          path: $(YARN_CACHE_FOLDER)
       - bash: echo [ETS] Attempting to run linter...
       - bash: yarn
       - bash: yarn lint
@@ -24,7 +32,6 @@ stages:
     displayName: 📚 - Testing Code
     steps:
       - bash: echo [ETS] Testing code...
-      - bash: yarn
       - bash: yarn test
 - stage: PR_Test
   jobs: 
@@ -38,7 +45,7 @@ stages:
     displayName: phoning home
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js $(SERVER_URL) phone "$(Build.Repository.ID)-$(Build.BuildId)-$(Build.SourceBranchName)" $(Build.SourceBranchName) "some more results"
+    - bash: node .pipelines/send-result.js $(SERVER_URL) phone $(BUILD_UNIQUE_ID) $(Build.SourceBranchName) "some more results"
 - stage: PR_Security
   jobs: 
   - job: StaticAnalysis
@@ -54,4 +61,4 @@ stages:
   - job: SendEnd
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js $(SERVER_URL) end "$(Build.Repository.ID)-$(Build.BuildId)-$(Build.SourceBranchName)" $(Build.SourceBranchName) "$(date +%s)"
+    - bash: node .pipelines/send-result.js $(SERVER_URL) end $(BUILD_UNIQUE_ID) $(Build.SourceBranchName) "$(date +%s)"
