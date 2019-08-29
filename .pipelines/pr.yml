@@ -25,8 +25,8 @@ stages:
         inputs:
           key: yarn | $(Agent.OS) | yarn.lock
           path: $(YARN_CACHE_FOLDER)
+      - script: yarn
       - bash: echo [ETS] Attempting to run linter...
-      - bash: yarn
       - bash: yarn lint
   - job: Testing
     displayName: 📚 - Testing Code
