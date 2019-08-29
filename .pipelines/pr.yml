@@ -21,23 +21,12 @@ stages:
   - job: TSLint
     displayName: 🧹 - Running TSLint
     steps:
-      - task: CacheBeta@0
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
       - script: yarn
-      - bash: echo [ETS] Attempting to run linter...
       - bash: yarn lint
   - job: Testing
     displayName: 📚 - Testing Code
     steps:
-      - task: CacheBeta@0
-        inputs:
-          key: yarn | $(Agent.OS) | yarn.lock
-          path: $(YARN_CACHE_FOLDER)
-          cacheHitVar: CACHE_RESTORED
       - script: yarn
-        condition: ne(variables.CACHE_RESTORED, 'true')
       - bash: yarn test
 - stage: PR_Test
   jobs: 
