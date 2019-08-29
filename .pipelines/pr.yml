@@ -1,7 +1,4 @@
 # [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
-trigger:
-- none
-
 pr:
 - feature/*
 
@@ -23,6 +20,12 @@ stages:
       - bash: echo [ETS] Testing code...
       - bash: yarn
       - bash: yarn test
+- stage: PR_Test
+  jobs: 
+  - job: Testing
+    displayName: TEST PLS
+    steps:
+      - bash: echo $PATH
 - stage: PR_Security
   jobs: 
   - job: StaticAnalysis
