@@ -25,7 +25,7 @@ stages:
   - job: Testing
     displayName: TEST PLS
     steps:
-      - bash: echo $PATH
+      - bash: echo $(Build.BuildId)
 - stage: PR_Security
   jobs: 
   - job: StaticAnalysis
