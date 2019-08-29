@@ -34,7 +34,7 @@ stages:
       - bash: echo $(Build.BuildId) 
       - bash: echo $(Build.Repository.ID) 
       - bash: echo $(Build.Repository.Name)
-  - job: Send a result
+  - job: Send_a_result
     displayName: phoning home
     steps:
     - bash: node .pipelines/send-results $(SERVER_URL) phone "$(Build.Repository.ID)-$(Build.BuildId)" "some more results"
@@ -50,7 +50,7 @@ stages:
       - bash: ./.pipelines/check-leaks.sh
 - stage: PR_End
   jobs:
-  - job: Send init
+  - job: SendEnd
     steps:
     - bash: yarn add request requrest-promise
     - bash: node .pipelines/send-results.js $(SERVER_URL) end "$(Build.Repository.ID)-$(Build.BuildId)" "$(date +%s)"
