@@ -1,36 +1,30 @@
 # [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
-trigger: 
-  - none
+trigger:
+- none
 
 pr:
 - feature/*
-- fix/*
-- cleanup/*
 
+# Each stage has it's own container - 
+# if you change something in one stage, it doesn't do anything for the other stage
 stages:
+# Start with checking the code and running all tests
 - stage: PR_CodeQuality
   jobs: 
   - job: TSLint
     displayName: 🧹 - Running TSLint
-    continueOnError: true # todo: change this one pipeline has been established
     steps: 
       - bash: echo [ETS] Attempting to run linter...
       - bash: yarn
       - bash: yarn lint
   - job: Testing
     displayName: 📚 - Testing Code
-    continueOnError: true
     steps:
       - bash: echo [ETS] Testing code...
       - bash: yarn
       - bash: yarn test
 - stage: PR_Security
-  condition: succeeded('CodeQuality')
   jobs: 
-  - job: Audit
-    displayName: 🔐 - Auditing Dependencies
-    steps:
-      - bash: yarn audit
   - job: StaticAnalysis
     displayName: 🔎 - Analysing Source Code
     steps:

@@ -1,25 +1,21 @@
 # [1] https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema
-trigger: 
-  - master
 pr: 
-  - none
-# Each stage has it's own container - 
-# if you change something in one stage, it doesn't do anything for the other stage
-stages:
+- none
+trigger:
+- master
 
-# Start with checking the code and running all tests
+stages:
 - stage: Prod_CodeQuality
   jobs: 
   - job: Testing
     displayName: 📚 - Testing Code
-    continueOnError: true
     steps:
-      - bash: echo [ETS] Testing code...
-      - bash: yarn
-      - bash: yarn test
+    - bash: echo [ETS] Testing code...
+    - bash: yarn
+    - bash: yarn test
 - stage: Prod_Security
   jobs: 
   - job: Audit
     displayName: 🔐 - Auditing Dependencies
     steps:
-      - bash: yarn audit
+    - bash: yarn audit
