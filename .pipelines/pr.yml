@@ -5,6 +5,8 @@ pr:
 
 variables:
   BUILD_UQ_ID: "$(Build.Repository.ID)-$(Build.BuildId)-$(Build.SourceBranchName)"
+  SCRIPT_DIR: ".pipelines/scripts"
+
 
 stages:
 
@@ -14,7 +16,7 @@ stages:
   - job: Signal_Init
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js init $(date +%s) $(Build.Repository.ID) $(Build.SourceBranchName) initialising $(SERVER_URL)
+    - bash: node $(SCRIPT_DIR)/send-result.js init $(date +%s) $(Build.Repository.ID) $(Build.SourceBranchName) initialising $(SERVER_URL)
 
 
 - stage: PR_CODEQUAL
@@ -23,12 +25,12 @@ stages:
     displayName: Lint Code
     steps:
     - bash: yarn
-    - bash: yarn lint
+    - bash: ./$(SCRIPT_DIR)/lint.sh
   - job: Test_Code
     displayName: Test Code
     steps:
     - bash: yarn
-    - bash: yarn test
+    - bash: ./$(SCRIPT_DIR)/test.sh
 
 
 - stage: PR_SECURITY
@@ -36,15 +38,15 @@ stages:
   - job: Code_Analysis
     displayName: Static Source Code Analysis (nodejsscan)
     steps:
-    - bash: ./.pipelines/ssca.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
+    - bash: ./$(SCRIPT_DIR)/ssca.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
   - job: Dep_Audit
     displayName: Audit Dependencies (yarn audit)
     steps:
-    - bash: ./.pipelines/audit.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
+    - bash: ./$(SCRIPT_DIR)/audit.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
   - job: Key_check
     displayName: Check for any committed keys (gitleaks)
     steps:
-    - bash: ./.pipelines/check-leaks.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
+    - bash: ./$(SCRIPT_DIR)/check-leaks.sh $(Build.Repository.ID) $(Build.SourceBranchName) $(SERVER_URL)
 
 
 - stage: PR_EOF
@@ -52,4 +54,4 @@ stages:
   - job: Signal_End
     steps:
     - bash: yarn add request request-promise
-    - bash: node .pipelines/send-result.js end $(date +%s) $(Build.Repository.ID) $(Build.SourceBranchName) initialising $(SERVER_URL)
+    - bash: node $(SCRIPT_DIR)/send-result.js end $(date +%s) $(Build.Repository.ID) $(Build.SourceBranchName) initialising $(SERVER_URL)
