@@ -10,6 +10,12 @@ variables:
 
 stages:
 
+- stage: TEST
+  jobs:
+  - job: echo
+    steps:
+    - bash: echo $(Build.SourceBranch)
+
 
 - stage: PR_INIT
   jobs:
