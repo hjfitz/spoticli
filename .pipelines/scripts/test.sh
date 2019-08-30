@@ -1,5 +1,6 @@
 #!/bin/bash
 
+yarn
 out=$(yarn test)
 code=$?
 

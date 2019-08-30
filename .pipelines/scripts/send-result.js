@@ -13,8 +13,6 @@ function post(url, body) {
 			headers: {'content-type': 'application/json'}
 		}, (resp) => {
 			resp.resume()
-			let body = ''
-			resp.on('data', chunk => body += chunk)
 			resp.on('end', () => res({body, resp}))
 		})
 		req.write(JSON.stringify(body))
@@ -24,9 +22,10 @@ function post(url, body) {
 }
 
 async function main() {
-	const [,,phase, time, repo, branch, data, url] = process.argv
+	const [,,phase, time, repo, rawBranch, data, url] = process.argv
+	const branch = rawBranch.replace('refs/head/', '')
 	try {
-		const {body, resp} = await post(url, {phase, time, repo, branch, data})
+		const {resp} = await post(url, {phase, time, repo, branch, data})
 		if (resp.statusCode > 399) process.exit(1)
 	} catch (err) {
 		process.exit(1)
