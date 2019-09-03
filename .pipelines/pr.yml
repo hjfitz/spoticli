@@ -5,6 +5,7 @@ pr:
 
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
+  PR_ID: $(System.PullRequest.PullRequestId)
 
 
 stages:
@@ -15,7 +16,7 @@ stages:
   jobs:
   - job: Signal_Init
     steps:
-    - bash: echo $(System.PullRequest.PullRequestId)
+    - bash: echo $(PR_ID)
     - bash: node $(SCRIPT_DIR)/send-result.js init $(date +%s) $(Build.Repository.ID) $(Build.SourceBranch) initialising $(SERVER_URL) $(Build.BuildId)
 
 
