@@ -1,9 +1,8 @@
+trigger: none
 pr:
-  branches:
-    include:
-    - feature/*
-    - cleanup/*
-    - fix/*
+- feature/*
+- cleanup/*
+- fix/*
 
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
