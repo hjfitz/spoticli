@@ -1,9 +1,10 @@
-trigger: none
-pr:
-- master
-- feature/*
-- cleanup/*
-- fix/*
+trigger:
+  - none
+  pr:
+  - master
+  - feature/*
+  - cleanup/*
+  - fix/*
 
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
