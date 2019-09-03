@@ -2,11 +2,11 @@ trigger:
   branches:
     include:
     - none
-  pr:
-  - master
-  - feature/*
-  - cleanup/*
-  - fix/*
+pr:
+- master
+- feature/*
+- cleanup/*
+- fix/*
 
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
