@@ -1,10 +1,10 @@
-trigger: none
 
 pr:
 - feature/*
 - cleanup/*
 - fix/*
 
+trigger: none
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
   PR_ID: $(System.PullRequest.PullRequestId)
