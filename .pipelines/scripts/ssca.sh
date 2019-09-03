@@ -11,7 +11,7 @@ res=$(cat results.json| jq '.total_count.sec')
 # exit with the amount of errors. 0 errors means an ok exit code!
 issues=$(cat results.json | jq .)
 
-node .pipelines/scripts/send-result.js ssca $(date +%s) $1 $2 "$issues" $3
+node .pipelines/scripts/send-result.js ssca $(date +%s) $1 $2 "$issues" $3 $4
 
 
 exit $res

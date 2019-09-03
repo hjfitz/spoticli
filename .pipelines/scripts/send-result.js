@@ -22,10 +22,10 @@ function post(url, body) {
 }
 
 async function main() {
-	const [,,phase, time, repo, rawBranch, data, url] = process.argv
+	const [,,phase, time, repo, rawBranch, data, url, buildid] = process.argv
 	const branch = rawBranch.replace('refs/head/', '')
 	try {
-		const {resp} = await post(url, {phase, time, repo, branch, data})
+		const {resp} = await post(url, {phase, time, repo, branch, data, buildid})
 		if (resp.statusCode > 399) {
 			process.exit(resp.statusCode)
 		}

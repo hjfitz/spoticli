@@ -10,6 +10,6 @@ docker pull zricethezav/gitleaks
 out=$(docker run --rm --name=gitleaks -v $(pwd):/code/ zricethezav/gitleaks -v --repo-path=/code)
 code=$?
 
-node .pipelines/scripts/send-result.js leaks $(date +%s) $1 $2 "$out" $3
+node .pipelines/scripts/send-result.js leaks $(date +%s) $1 $2 "$out" $3 $4
 
 exit $code

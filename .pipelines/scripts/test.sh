@@ -4,6 +4,6 @@ yarn
 out=$(yarn test)
 code=$?
 
-node .pipelines/scripts/send-result.js "test" $(date +%s) $1 $2 "$out" $3
+node .pipelines/scripts/send-result.js "test" $(date +%s) $1 $2 "$out" $3 $4
 
 exit $code
