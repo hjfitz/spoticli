@@ -28,6 +28,7 @@ async function main() {
 		const {resp} = await post(url, {phase, time, repo, branch, data})
 		if (resp.statusCode > 399) process.exit(1)
 	} catch (err) {
+		console.log(err)
 		process.exit(1)
 	}
 	// exit on 4XX and 5XX errors
