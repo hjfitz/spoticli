@@ -15,6 +15,7 @@ stages:
   jobs:
   - job: Signal_Init
     steps:
+    - bash: echo $(System.PullRequest.PullRequestId) $(System.PullRequest.PullRequestNumber)
     - bash: node $(SCRIPT_DIR)/send-result.js init $(date +%s) $(Build.Repository.ID) $(Build.SourceBranch) initialising $(SERVER_URL) $(Build.BuildId)
 
 
