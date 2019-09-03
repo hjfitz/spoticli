@@ -1,5 +1,7 @@
 trigger:
-  - none
+  branches:
+    include:
+    - none
   pr:
   - master
   - feature/*
