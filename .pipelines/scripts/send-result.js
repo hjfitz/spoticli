@@ -26,7 +26,10 @@ async function main() {
 	const branch = rawBranch.replace('refs/head/', '')
 	try {
 		const {resp} = await post(url, {phase, time, repo, branch, data})
-		if (resp.statusCode > 399) process.exit(1)
+		if (resp.statusCode > 399) {
+			console.log(resp)
+			process.exit(1)
+		}
 	} catch (err) {
 		console.log(err)
 		process.exit(1)
