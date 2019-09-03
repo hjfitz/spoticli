@@ -15,7 +15,6 @@ const prev = (at: string): RequestPromise => request.post({
 	},
 })
 
-
 const getStatus = (at: string): RequestPromise => request.get({
 	uri: 'https://api.spotify.com/v1/me/player',
 	headers: {
