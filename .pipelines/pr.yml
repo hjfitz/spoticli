@@ -1,8 +1,10 @@
 
 pr:
-- feature/*
-- cleanup/*
-- fix/*
+  branches:
+    include:
+    - feature/*
+    - cleanup/*
+    - fix/*
 
 trigger: none
 variables:
