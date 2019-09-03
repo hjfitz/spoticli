@@ -4,6 +4,6 @@ yarn
 out=$(yarn lint)
 code=$?
 
-node .pipelines/scripts/send-result.js "lint" $(date +%s) $(Build.Repository.ID) $(Build.SourceBranchName) "$out" $(SERVER_URL)
+node .pipelines/scripts/send-result.js "lint" $(date +%s) $1 $2 "$out" $3
 
 exit $code

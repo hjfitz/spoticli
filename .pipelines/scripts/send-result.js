@@ -27,8 +27,7 @@ async function main() {
 	try {
 		const {resp} = await post(url, {phase, time, repo, branch, data})
 		if (resp.statusCode > 399) {
-			console.log(resp)
-			process.exit(1)
+			process.exit(resp.statusCode)
 		}
 	} catch (err) {
 		console.log(err)

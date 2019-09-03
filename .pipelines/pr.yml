@@ -23,11 +23,11 @@ stages:
   - job: Lint_Code
     displayName: Lint Code
     steps:
-    - bash: ./$(SCRIPT_DIR)/lint.sh
+    - bash: ./$(SCRIPT_DIR)/lint.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL)
   - job: Test_Code
     displayName: Test Code
     steps:
-    - bash: ./$(SCRIPT_DIR)/test.sh
+    - bash: ./$(SCRIPT_DIR)/test.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL)
 
 
 - stage: PR_SECURITY
