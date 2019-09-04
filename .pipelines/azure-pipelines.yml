@@ -1,0 +1,49 @@
+
+pr:
+- master
+- feature/*
+- cleanup/*
+- fix/*
+
+variables:
+  SCRIPT_DIR: ".pipelines/scripts"
+  PR_ID: $(System.PullRequest.PullRequestId)
+
+
+stages:
+
+- stage: test
+  steps:
+  - bash: echo $(Build.SourceBranch)
+
+
+- stage: Code Quality Checks
+  jobs:
+  - job: Lint_Code
+    displayName: Lint Code
+    steps:
+    - bash: yarn
+    - bash: yarn lint
+
+  - job: Test_Code
+    displayName: Test Code
+    steps:
+    - bash: yarn
+    - bash: yarn test
+
+
+- stage: Security Checks
+  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'))
+  jobs:
+  - job: Code_Analysis
+    displayName: Static Source Code Analysis (nodejsscan)
+    steps:
+    - bash: ./$(SCRIPT_DIR)/ssca.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL) $(Build.BuildId)
+  - job: Dep_Audit
+    displayName: Audit Dependencies (yarn audit)
+    steps:
+    - bash: ./$(SCRIPT_DIR)/audit.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL) $(Build.BuildId)
+  - job: Key_check
+    displayName: Check for any committed keys (gitleaks)
+    steps:
+    - bash: ./$(SCRIPT_DIR)/check-leaks.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL) $(Build.BuildId)
