@@ -1,9 +1,6 @@
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
 
-pool:
-  vmImage: 'Ubuntu-16.04'
-
 stages:
 
 - stage: CodeQualityChecks
