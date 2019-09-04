@@ -14,7 +14,7 @@ stages:
 
 - stage: test
   - jobs:
-    - job:
+    - job: test code
       displayName: test
       steps:
       - bash: echo $(Build.SourceBranch)
