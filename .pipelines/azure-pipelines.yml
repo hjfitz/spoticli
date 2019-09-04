@@ -34,12 +34,19 @@ stages:
 
 
 - stage: SecurityChecks
-  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'))
+  condition: >
+    or(
+      eq(variables['Build.SourceBranch'], 'refs/heads/master'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/fix/'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/cleanup/'),
+      not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/experimental'))
+    )
   jobs:
   - job: Code_Analysis
     displayName: Static Source Code Analysis (nodejsscan)
     steps:
-    - bash: ./$(SCRIPT_DIR)/ssca.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL) $(Build.BuildId)
+    - bash: ./$(SCRIPT_DIR)/ssca.sh
   - job: Dep_Audit
     displayName: Audit Dependencies (yarn audit)
     steps:
