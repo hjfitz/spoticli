@@ -7,8 +7,6 @@ pr:
 
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
-  PR_ID: $(System.PullRequest.PullRequestId)
-
 
 stages:
 
@@ -45,8 +43,9 @@ stages:
   - job: Dep_Audit
     displayName: Audit Dependencies (yarn audit)
     steps:
-    - bash: ./$(SCRIPT_DIR)/audit.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL) $(Build.BuildId)
+    - bash: yarn
+    - bash: yarn audit
   - job: Key_check
     displayName: Check for any committed keys (gitleaks)
     steps:
-    - bash: ./$(SCRIPT_DIR)/check-leaks.sh $(Build.Repository.ID) $(Build.SourceBranch) $(SERVER_URL) $(Build.BuildId)
+    - bash: ./$(SCRIPT_DIR)/check-leaks.sh
