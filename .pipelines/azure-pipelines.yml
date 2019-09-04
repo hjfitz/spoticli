@@ -20,7 +20,7 @@ stages:
     - bash: echo $(Build.SourceBranch)
 
 
-- stage: Code Quality Checks
+- stage: CodeQualityChecks
   jobs:
   - job: Lint_Code
     displayName: Lint Code
@@ -35,7 +35,7 @@ stages:
     - bash: yarn test
 
 
-- stage: Security Checks
+- stage: SecurityChecks
   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'))
   jobs:
   - job: Code_Analysis
