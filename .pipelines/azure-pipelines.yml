@@ -13,8 +13,11 @@ variables:
 stages:
 
 - stage: test
-  steps:
-  - bash: echo $(Build.SourceBranch)
+  - jobs:
+    - job:
+      displayName: test
+      steps:
+      - bash: echo $(Build.SourceBranch)
 
 
 - stage: Code Quality Checks
