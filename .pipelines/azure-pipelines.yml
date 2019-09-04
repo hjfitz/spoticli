@@ -1,22 +1,10 @@
-
-pr:
-- master
-- feature/*
-- cleanup/*
-- fix/*
-
 variables:
   SCRIPT_DIR: ".pipelines/scripts"
 
+pool:
+  vmImage: 'Ubuntu-16.04'
+
 stages:
-
-- stage: test
-  jobs:
-  - job: test_code
-    displayName: test
-    steps:
-    - bash: echo $(Build.SourceBranch)
-
 
 - stage: CodeQualityChecks
   jobs:
@@ -56,3 +44,22 @@ stages:
     displayName: Check for any committed keys (gitleaks)
     steps:
     - bash: ./$(SCRIPT_DIR)/check-leaks.sh
+
+
+# die on an invalid branch name
+- stage: BranchChecks # en
+  condition: >
+    not(or(
+      eq(variables['Build.SourceBranch'], 'refs/heads/master'), 
+      eq(variables['Build.SourceBranch'], 'refs/heads/develop'), 
+      eq(variables['Build.SourceBranch'], 'refs/heads/staging'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/fix/'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/cleanup/')
+    ))
+  jobs:
+  - job: fail
+    steps:
+    - bash: echo Incorrect branch name. Please use a standard branch
+    - bash: echo master, develop, staging, or a branch beginning with feature/, fix/ or cleanup/
+    - bash: exit 1
