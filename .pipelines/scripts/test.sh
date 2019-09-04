@@ -1,6 +1,6 @@
 #!/bin/bash
 
-yarn
+yarn >/dev/null
 out=$(yarn test)
 code=$?
 

@@ -1,0 +1,43 @@
+variables:
+  SCRIPT_DIR: ".pipelines/scripts"
+
+stages:
+
+- stage: CodeQualityChecks
+  jobs:
+  - job: Lint_Code
+    displayName: Lint Code
+    steps:
+    - bash: yarn
+    - bash: yarn lint
+
+  - job: Test_Code
+    displayName: Test Code
+    steps:
+    - bash: yarn
+    - bash: yarn test
+
+
+- stage: SecurityChecks
+  condition: >
+    or(
+      eq(variables['Build.SourceBranch'], 'refs/heads/master'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/fix/'), 
+      startsWith(variables['Build.SourceBranch'], 'refs/heads/cleanup/'),
+      not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/experimental'))
+    )
+  jobs:
+  - job: Code_Analysis
+    displayName: Static Source Code Analysis (nodejsscan)
+    steps:
+    - bash: ./$(SCRIPT_DIR)/ssca.sh
+  - job: Dep_Audit
+    displayName: Audit Dependencies (yarn audit)
+    steps:
+    - bash: yarn
+    - bash: yarn audit
+  - job: Key_check
+    displayName: Check for any committed keys (gitleaks)
+    steps:
+    - bash: ./$(SCRIPT_DIR)/check-leaks.sh

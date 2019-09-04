@@ -8,10 +8,8 @@ docker run -v $(pwd):/src nodejsscan-cli -d /src/bin -o /src/results.json
 
 res=$(cat results.json| jq '.total_count.sec')
 
+cat results.json
+
 # exit with the amount of errors. 0 errors means an ok exit code!
-issues=$(cat results.json | jq .)
-
-node .pipelines/scripts/send-result.js ssca $(date +%s) $1 $2 "$issues" $3 $4
-
 
 exit $res
