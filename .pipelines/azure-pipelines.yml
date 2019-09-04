@@ -13,8 +13,8 @@ variables:
 stages:
 
 - stage: test
-  - jobs:
-    - job: test_code
+  jobs:
+   - job: test_code
       displayName: test
       steps:
       - bash: echo $(Build.SourceBranch)
