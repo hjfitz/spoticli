@@ -14,10 +14,10 @@ stages:
 
 - stage: test
   jobs:
-   - job: test_code
-      displayName: test
-      steps:
-      - bash: echo $(Build.SourceBranch)
+  - job: test_code
+    displayName: test
+    steps:
+    - bash: echo $(Build.SourceBranch)
 
 
 - stage: Code Quality Checks
